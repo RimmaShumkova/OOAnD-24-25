@@ -28,7 +28,7 @@ public class MoveCommandTest
 
         var cmd = new MoveCommand(moving.Object);
 
-        Assert.Throws<Exception>( 
+        Assert.Throws<Exception>(
             () => cmd.Execute()
         );
 

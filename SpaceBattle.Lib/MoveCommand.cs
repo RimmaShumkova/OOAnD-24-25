@@ -1,4 +1,5 @@
-namespace SpaceBattle.Lib;
+﻿namespace SpaceBattle.Lib;
+
 public class MoveCommand : ICommand
 {
     private readonly IMoving obj;
