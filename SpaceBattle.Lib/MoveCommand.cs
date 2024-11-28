@@ -1,16 +1,4 @@
-﻿namespace SpaceBattle.Lib;
-
-public interface IMoving
-{
-    int[] Position { get; set; }
-    int[] Velocity { get; }
-}
-
-public interface ICommand
-{
-    public void Execute();
-}
-
+namespace SpaceBattle.Lib;
 public class MoveCommand : ICommand
 {
     private readonly IMoving obj;
