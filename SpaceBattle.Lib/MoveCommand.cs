@@ -2,16 +2,13 @@
 
 public class MoveCommand : ICommand
 {
-    private readonly IMoving obj;
-    public MoveCommand(IMoving obj)
+    private readonly IMovable _objToMove;
+    public MoveCommand(IMovable obj)
     {
-        this.obj = obj;
+        _objToMove = obj;
     }
     public void Execute()
     {
-        obj.Position = new int[]{
-            obj.Position[0] + obj.Velocity[0],
-            obj.Position[1] + obj.Velocity[1],
-        };
+        _objToMove.Position += _objToMove.Veloсity;
     }
 }
