@@ -27,13 +27,13 @@ jobs:
         run: dotnet build --no-restore /p:ContinuousIntegrationBuild=true
 
       - name: Test
-        run: dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
+        run: dotnet test /p:CollectCoverage=true /p:CoverletOutput=TestResults /p:CoverletOutputFormat=cobertura
 
       - name: Install ReportGenerator
         run: dotnet tool install --global dotnet-reportgenerator-globaltool
 
       - name: Generate coverage report
-        run: reportgenerator -reports:**/coverage.cobertura.xml -targetdir:coverage -reporttypes:Html
+        run: reportgenerator -reports:TestResults/coverage.cobertura.xml -targetdir:coverage -reporttypes:Html
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v2
