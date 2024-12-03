@@ -9,7 +9,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -18,7 +19,7 @@ jobs:
 
       - name: Checkstyle
         run: dotnet format --verify-no-changes
- 
+
       - name: Restore dependencies
         run: dotnet restore
 
@@ -27,3 +28,15 @@ jobs:
 
       - name: Test
         run: dotnet test /p:CollectCoverage=true /p:CoverletOutput=TestResults /p:CoverletOutputFormat=cobertura
+
+      - name: Install ReportGenerator
+        run: dotnet tool install --global dotnet-reportgenerator-globaltool
+
+      - name: Generate coverage report
+        run: reportgenerator -reports:TestResults/coverage.cobertura.xml -targetdir:coverage -reporttypes:Html
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-report
+          path: coverage
