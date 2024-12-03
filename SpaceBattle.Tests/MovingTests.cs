@@ -3,7 +3,7 @@ using SpaceBattle.Lib;
 
 namespace SpaceBattle.Tests;
 
-public class UnitTest1
+public class MovingTests
 {
     [Fact]
     public void PosTestMove()
@@ -16,6 +16,7 @@ public class UnitTest1
         m.VerifySet(_m => _m.Position = new Vector(5, 8));
         m.VerifyAll();
     }
+
     [Fact]
     public void TestPositionRaisesException()
     {
@@ -26,6 +27,7 @@ public class UnitTest1
         var act = () => c.Execute();
         Assert.Throws<NullReferenceException>(act);
     }
+
     [Fact]
     public void TestSpeedRaisesException()
     {
@@ -36,6 +38,20 @@ public class UnitTest1
         var act = () => c.Execute();
         Assert.Throws<NullReferenceException>(act);
     }
+
+    [Fact]
+    public void TestPositionIsNotWritable()
+    {
+        var m = new Mock<IMovable>();
+        m.Setup(_m => _m.Position).Returns(new Vector(12, 5));
+        m.Setup(_m => _m.Veloсity).Returns(new Vector(-7, 3));
+        m.SetupSet(_m => _m.Position = It.IsAny<Vector>()).Throws<InvalidOperationException>();
+
+        var c = new MoveCommand(m.Object);
+
+        Assert.Throws<InvalidOperationException>(() => c.Execute());
+    }
+
     [Fact]
     public void TestAddRaisesException()
     {
