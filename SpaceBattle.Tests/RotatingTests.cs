@@ -94,26 +94,42 @@ public class RotateCommandTest
     }
 
     [Fact]
-    public void TestNegativeNumeratorNegativeDenominator()
+    public void TestPostitiveAngleEq()
     {
-        var angle = new Angle(-1, -1);
-        Assert.Equal(1, angle._numerator);
-        Assert.Equal(1, angle._denominator);
+        var a = new Angle(45, -1);
+        var b = new Angle(-135, 3);
+        Assert.True(a == b);
     }
 
     [Fact]
-    public void TestPositiveNumeratorPositiveDenominator()
+    public void TestNegativeAngleEq()
     {
-        var angle = new Angle(1, 1);
-        Assert.Equal(1, angle._numerator);
-        Assert.Equal(1, angle._denominator);
+        var a = new Angle(45, -1);
+        var b = new Angle(-135, 45);
+        Assert.False(a == b);
     }
 
     [Fact]
-    public void TestNegativeNumeratorPositiveDenominator()
+    public void TestAngleEqMethod()
     {
-        var angle = new Angle(-1, 1);
-        Assert.Equal(-1, angle._numerator);
-        Assert.Equal(1, angle._denominator);
+        var a = new Angle(-30, -1);
+        var b = 1;
+        Assert.False(a.Equals(b));
+    }
+
+    [Fact]
+    public void TestAngleNotEq()
+    {
+        var a = new Angle(45, -1);
+        var b = new Angle(-135, 45);
+        Assert.True(a != b);
+    }
+
+    [Fact]
+    public void TestAngleAdd()
+    {
+        var a = new Angle(45, 1);
+        var b = new Angle(90, 1);
+        Assert.Equal(new Angle(135, 1), a + b);
     }
 }

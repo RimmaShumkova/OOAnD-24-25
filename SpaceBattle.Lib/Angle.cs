@@ -46,4 +46,13 @@ public class Angle
     {
         return HashCode.Combine(_numerator, _denominator);
     }
+
+    public static bool operator ==(Angle a, Angle b)
+    {
+        return a._numerator == b._numerator && a._denominator == b._denominator;
+    }
+    public static bool operator !=(Angle a, Angle b)
+    {
+        return !(a == b);
+    }
 }
