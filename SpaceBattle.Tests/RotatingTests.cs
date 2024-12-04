@@ -92,4 +92,28 @@ public class RotateCommandTest
         var angle2 = new Angle(1, 2);
         Assert.Equal(angle1.GetHashCode(), angle2.GetHashCode());
     }
+
+    [Fact]
+    public void TestNegativeNumeratorNegativeDenominator()
+    {
+        var angle = new Angle(-1, -1);
+        Assert.Equal(1, angle._numerator);
+        Assert.Equal(1, angle._denominator);
+    }
+
+    [Fact]
+    public void TestPositiveNumeratorPositiveDenominator()
+    {
+        var angle = new Angle(1, 1);
+        Assert.Equal(1, angle._numerator);
+        Assert.Equal(1, angle._denominator);
+    }
+
+    [Fact]
+    public void TestNegativeNumeratorPositiveDenominator()
+    {
+        var angle = new Angle(-1, 1);
+        Assert.Equal(-1, angle._numerator);
+        Assert.Equal(1, angle._denominator);
+    }
 }
