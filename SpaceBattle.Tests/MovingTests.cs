@@ -178,4 +178,11 @@ public class VectorTests
     {
         Assert.Throws<ArgumentException>(() => new Vector());
     }
+    [Fact]
+    public void VectorEqualsReturnsFalseForNullVector()
+    {
+        var v1 = new Vector(1, 2, 3);
+        Vector? v2 = null;
+        Assert.False(v1.Equals(v2));
+    }
 }
