@@ -2,8 +2,8 @@
 
 public class Angle
 {
-    private readonly int _numerator;
-    private readonly int _denominator;
+    public int _numerator;
+    public int _denominator;
 
     private static int GCD(int n, int m)
     {

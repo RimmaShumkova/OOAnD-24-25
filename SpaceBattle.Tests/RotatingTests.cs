@@ -72,4 +72,24 @@ public class RotateCommandTest
     {
         Assert.Throws<DivideByZeroException>(() => new Angle(45, 0));
     }
+
+    [Fact]
+    public void TestChangeSigns()
+    {
+        var angle = new Angle(1, -1);
+        Assert.Equal(-1, angle._numerator);
+        Assert.Equal(1, angle._denominator);
+
+        angle = new Angle(-1, -1);
+        Assert.Equal(1, angle._numerator);
+        Assert.Equal(1, angle._denominator);
+    }
+
+    [Fact]
+    public void TestGetHashCode()
+    {
+        var angle1 = new Angle(1, 2);
+        var angle2 = new Angle(1, 2);
+        Assert.Equal(angle1.GetHashCode(), angle2.GetHashCode());
+    }
 }
