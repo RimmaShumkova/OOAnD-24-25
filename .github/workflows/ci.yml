@@ -26,13 +26,27 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
 
-      - name: Build
+      - name: Check Project Structure
         run: |
-          dotnet build SpaceBattle.Lib/SpaceBattle.Lib.csproj --configuration Release
-          dotnet build SpaceBattle.Tests/SpaceBattle.Tests.csproj --configuration Release
+          lib_project=$(find . -name "*.Lib.csproj")
+          if [ -z "$lib_project" ]; then
+            echo "❌ Error: No .Lib project found!"
+            exit 1
+          fi
+
+      - name: Build
+        run: dotnet build --configuration Release
 
       - name: Test
-        run: dotnet test --verbosity normal --collect:"XPlat Code Coverage" --logger trx --results-directory coverage
+        run: |
+          test_projects=$(find . -name "*.Tests.csproj")
+          if [ -z "$test_projects" ]; then
+            echo "❌ Warning: No test projects found!"
+            exit 1
+          fi
+          for proj in $(find . -name "*.Tests.csproj"); do
+            dotnet test "$proj" --verbosity normal --collect:"XPlat Code Coverage" --logger trx --results-directory coverage -- --parallel
+          done
 
       - name: Install ReportGenerator
         run: dotnet tool install -g dotnet-reportgenerator-globaltool
@@ -40,9 +54,6 @@ jobs:
       - name: Generate Detailed Coverage Report
         run: |
           reportgenerator "-reports:coverage/*/coverage.cobertura.xml" "-targetdir:coveragereport" "-reporttypes:TextSummary;Cobertura"
-          if [ "${{ github.actor }}" != "zaryanezrya" ] && [ "${{ github.actor }}" != "etyumentcev" ]; then
-            echo -e "\n\n\nWith love to everyone enjoying or suffering OOAnD\n\n\n - goldenreaper, HoneyMafia"
-          fi
 
       - name: Code Coverage Summary Report
         uses: irongut/CodeCoverageSummary@v1.3.0
@@ -62,21 +73,20 @@ jobs:
 
       - name: Find Uncovered Lines
         run: |
-          echo "### Uncovered Lines Details" >> $GITHUB_STEP_SUMMARY
-          echo "Analyzing coverage report..." >> $GITHUB_STEP_SUMMARY
-          
-          for file in $(find SpaceBattle.Lib -name "*.cs" -not -path "*/obj/*"); do
-            filename=$(basename "$file")
-            echo "#### $filename" >> $GITHUB_STEP_SUMMARY
-          done
+          echo "### Uncovered Lines Details"
+          echo "Analyzing coverage report..."
+          if [ "${{ github.actor }}" != "zaryanezrya" ] && [ "${{ github.actor }}" != "etyumentcev" ]; then
+            echo -e "\n\n\nWith love to everyone enjoying or suffering OOAnD\n\n\n - goldenreaper, HoneyMafia"
+          fi
 
       - name: Show Coverage Details
         run: |
           echo "### 📊 Coverage Details by Class" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           
-          if [ ! -d "SpaceBattle.Lib" ]; then
-            echo "❌ Error: SpaceBattle.Lib directory not found!" >> $GITHUB_STEP_SUMMARY
+          lib_dir=$(find . -type d -name "*.Lib" | head -n 1)
+          if [ -z "$lib_dir" ]; then
+            echo "❌ Error: No .Lib directory found!" >> $GITHUB_STEP_SUMMARY
             exit 1
           fi
           
@@ -93,7 +103,7 @@ jobs:
               line_rate=$(awk "BEGIN {print ${BASH_REMATCH[3]}*100}")
               branch_rate=$(awk "BEGIN {print ${BASH_REMATCH[4]}*100}")
               
-              if (( $(echo "$line_rate >= 90" | bc -l) )); then
+              if (( $(echo "$line_rate == 100" | bc -l) )); then
                 emoji="✅"
               elif (( $(echo "$line_rate >= 75" | bc -l) )); then
                 emoji="⚠️"
@@ -112,20 +122,19 @@ jobs:
                 
                 actual_file=""
                 
-                if [ -f "SpaceBattle.Lib/$file_name" ]; then
-                  actual_file="SpaceBattle.Lib/$file_name"
+                if [ -f "$lib_dir/$file_name" ]; then
+                  actual_file="$lib_dir/$file_name"
                 else
-                  found_file=$(find SpaceBattle.Lib -name "$file_name" -not -path "*/obj/*" -not -path "*/bin/*" -type f | head -n 1)
+                  found_file=$(find "$lib_dir" -name "$file_name" -not -path "*/obj/*" -not -path "*/bin/*" -type f | head -n 1)
                   if [ ! -z "$found_file" ]; then
                     actual_file="$found_file"
                   else
-                    found_file=$(find SpaceBattle.Lib -iname "$file_name" -not -path "*/obj/*" -not -path "*/bin/*" -type f | head -n 1)
+                    found_file=$(find "$lib_dir" -iname "$file_name" -not -path "*/obj/*" -not -path "*/bin/*" -type f | head -n 1)
                     if [ ! -z "$found_file" ]; then
                       actual_file="$found_file"
                     fi
                   fi
                 fi
-                
                 if [ ! -z "$actual_file" ]; then
                   class_start=$(grep -n "<class.*$file_name.*>" "$coverage_file" | cut -d: -f1)
                   class_end=$(tail -n +$class_start "$coverage_file" | grep -n "</class>" | head -n 1 | cut -d: -f1)
@@ -153,7 +162,7 @@ jobs:
                   unset seen_lines
                   rm class_info.xml
                 else
-                  echo "⚠️ File not found in SpaceBattle.Lib: $file_name" >> $GITHUB_STEP_SUMMARY
+                  echo "⚠️ File not found in $lib_dir: $file_name" >> $GITHUB_STEP_SUMMARY
                   echo "Please ensure the file exists and is in the correct location." >> $GITHUB_STEP_SUMMARY
                 fi
                 
