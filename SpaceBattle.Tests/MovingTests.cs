@@ -66,6 +66,32 @@ public class MovingTests
 public class VectorTests
 {
     [Fact]
+    public void VectorOperatorPlusReturnsZeroVector()
+    {
+        var v1 = new Vector(1, -1, 2);
+        var v2 = new Vector(-1, 1, -2);
+        var result = v1 + v2;
+        var expected = new Vector(0, 0, 0);
+        Assert.True(result.Equals(expected));
+    }
+
+    [Fact]
+    public void VectorOperatorPlusThrowsForDifferentLengths1()
+    {
+        var v1 = new Vector(1, 2, 3);
+        var v2 = new Vector(1, 2);
+        Assert.Throws<ArgumentException>(() => _ = v1 + v2);
+    }
+
+    [Fact]
+    public void VectorOperatorPlusThrowsForDifferentLengths2()
+    {
+        var v1 = new Vector(1, 2);
+        var v2 = new Vector(1, 2, 3);
+        Assert.Throws<ArgumentException>(() => _ = v1 + v2);
+    }
+
+    [Fact]
     public void VectorIsInitializableTest()
     {
         int[] elements = { 1, 2, 3 };
@@ -112,14 +138,6 @@ public class VectorTests
         var result = v1 + v2;
         var expected = new Vector(5, 7, 9);
         Assert.True(result.Equals(expected));
-    }
-
-    [Fact]
-    public void VectorOperatorPlusThrowsForDifferentLengthsTest()
-    {
-        var v1 = new Vector(1, 2);
-        var v2 = new Vector(3, 4, 5);
-        Assert.Throws<InvalidOperationException>(() => _ = v1 + v2);
     }
 
     [Fact]
@@ -178,11 +196,20 @@ public class VectorTests
     {
         Assert.Throws<ArgumentException>(() => new Vector());
     }
+
     [Fact]
-    public void VectorEqualsReturnsFalseForNullVector()
+    public void VectorOperatorEqualsReturnsFalseForNullVector1()
     {
         var v1 = new Vector(1, 2, 3);
         Vector? v2 = null;
-        Assert.False(v1.Equals(v2));
+        Assert.False(v1 == v2!);
+    }
+
+    [Fact]
+    public void VectorOperatorEqualsReturnsFalseForNullVector2()
+    {
+        Vector? v1 = null;
+        var v2 = new Vector(1, 2, 3);
+        Assert.False(v1! == v2);
     }
 }

@@ -46,7 +46,7 @@ public class Vector
     {
         if (x.Size != y.Size)
         {
-            throw new InvalidOperationException("Vectors must have the same size!");
+            throw new ArgumentException("Vectors must have the same size!");
         }
 
         return new Vector(x._elements.Zip(y._elements, (a, b) => a + b).ToArray());
