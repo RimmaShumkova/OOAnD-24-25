@@ -1,4 +1,4 @@
-using App;
+﻿using App;
 using App.Scopes;
 using Moq;
 using SpaceBattle.Lib;
@@ -13,10 +13,10 @@ public class StartActionCommandTest
         var iocScope = Ioc.Resolve<object>("IoC.Scope.Create");
         Ioc.Resolve<App.ICommand>("IoC.Scope.Current.Set", iocScope).Execute();
     }
-    
+
     [Fact]
-    public void StartActionCommandExecuteTest()    
-    {   
+    public void StartActionCommandExecuteTest()
+    {
         var mCommand = new Mock<SpaceBattle.Lib.ICommand>();
         var macroCommand = new Mock<SpaceBattle.Lib.ICommand>();
         var inj = new InjectableCommand();
@@ -34,10 +34,9 @@ public class StartActionCommandTest
         var obj = new Mock<IDictionary<string, object>>();
 
         obj.Setup(x => x["Action"]).Returns("Move");
-        obj.Setup(x => x["Args"]).Returns(new object[]{"test"});
+        obj.Setup(x => x["Args"]).Returns(new object[] { "test" });
         obj.Setup(x => x["Key"]).Returns("");
-        
-        
+
         var startCommand = new StartActionCommand(obj.Object);
 
         startCommand.Execute();

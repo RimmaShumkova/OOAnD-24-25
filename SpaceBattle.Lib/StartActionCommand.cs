@@ -1,4 +1,4 @@
-using App;
+﻿using App;
 
 namespace SpaceBattle.Lib;
 
@@ -15,7 +15,7 @@ public class StartActionCommand : ICommand
     }
 
     public void Execute()
-    { 
+    {
         var mc = Ioc.Resolve<ICommand>("Macro." + _action, _args);
         var inj = Ioc.Resolve<ICommand>("Commands.CommandInjectable");
         var q = Ioc.Resolve<Queue<ICommand>>("Game.Queue");
