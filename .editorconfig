@@ -1,3 +1,5 @@
+# Source: https://github.com/dotnet/format/blob/main/.editorconfig without IDE0073
+
 # EditorConfig is awesome:http://EditorConfig.org
 
 # top-most EditorConfig file
@@ -139,7 +141,7 @@ dotnet_naming_symbols.all_members.applicable_kinds = *
 dotnet_naming_style.pascal_case_style.capitalization = pascal_case
 
 # IDE0073: File header
-dotnet_diagnostic.IDE0073.severity = warning
+# dotnet_diagnostic.IDE0073.severity = warning
 # file_header_template = Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the MIT license.  See License.txt in the project root for license information.
 
 # IDE0035: Remove unreachable code
@@ -179,7 +181,7 @@ dotnet_diagnostic.IDE0060.severity = warning
 dotnet_diagnostic.CA1012.severity = warning
 
 # CA1822: Make member static
-dotnet_diagnostic.CA1822.severity = warning
+# dotnet_diagnostic.CA1822.severity = warning
 
 # IDE0005: Using directive is unnecessary
 dotnet_diagnostic.IDE0005.severity = warning
