@@ -24,6 +24,17 @@
   </ItemGroup>
 
   <ItemGroup>
+  <Reference Include="Core">
+    <HintPath>..\Common\Core.dll</HintPath>
+  </Reference>
+  <Reference Include="Scopes">
+    <HintPath>..\Common\Scopes.dll</HintPath>
+  </Reference>
+  </ItemGroup>
+
+  
+
+  <ItemGroup>
     <ProjectReference Include="..\SpaceBattle.Lib\SpaceBattle.Lib.csproj" />
   </ItemGroup>
 
