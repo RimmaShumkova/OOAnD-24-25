@@ -2,10 +2,17 @@
 
 public class InjectableCommand : ICommand, ICommandInjectable
 {
-    private ICommand _cmd;
+    private ICommand? _cmd;
     public void Execute()
     {
-        _cmd.Execute();
+        try
+        {
+            _cmd.Execute();
+        }
+        catch (NullReferenceException)
+        {
+            throw new Exception("No command");
+        }
     }
     public void Inject(ICommand cmd)
     {
