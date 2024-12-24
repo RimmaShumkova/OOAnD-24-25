@@ -1,6 +1,8 @@
 ﻿using App;
 using App.Scopes;
-namespace SpaceBattle.Lib.Tests;
+using SpaceBattle.Lib;
+
+namespace SpaceBattle.Tests;
 
 public class RegisterDependencyCommandInjectableCommandTests
 {
@@ -14,7 +16,7 @@ public class RegisterDependencyCommandInjectableCommandTests
         var registerCm = new RegisterDependencyCommandInjectableCommand();
         registerCm.Execute();
 
-        Ioc.Resolve<ICommand>("Commands.CommadInjectable");
+        Ioc.Resolve<SpaceBattle.Lib.ICommand>("Commands.CommadInjectable");
         Ioc.Resolve<ICommandInjectable>("Commands.CommadInjectable");
         Ioc.Resolve<InjectableCommand>("Commands.CommadInjectable");
 
