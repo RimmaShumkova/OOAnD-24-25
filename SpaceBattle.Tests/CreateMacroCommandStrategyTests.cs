@@ -60,4 +60,16 @@ public class CreateMacroCommandStrategyTests
 
         Assert.Throws<Exception>(() => CreateMacro.Resolve(new object[0]));
     }
+    [Fact]
+    public void ResolveHandlesEmptyCommandSpec()
+    {
+        Ioc.Resolve<App.ICommand>("IoC.Register", "Specs.Macro.Empty", (object[] args) => new List<string>()).Execute();
+
+        var CreateMacro = new CreateMacroCommandStrategy("Macro.Empty");
+
+        var macroCommand = CreateMacro.Resolve(new object[0]);
+
+        Assert.NotNull(macroCommand);
+        macroCommand.Execute();
+    }
 }
