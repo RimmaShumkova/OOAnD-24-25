@@ -35,4 +35,11 @@ public class CreateMacroCommandStrategyTests
         mockTest2.Verify(x => x.Execute());
 
     }
+    [Fact]
+    public void ResolveThrowsExceptionWhenDependenciesMissing()
+    {
+        var CreateMacro = new CreateMacroCommandStrategy("Macro.Missing");
+
+        Assert.Throws<Exception>(() => CreateMacro.Resolve(new object[0]));
+    }
 }
