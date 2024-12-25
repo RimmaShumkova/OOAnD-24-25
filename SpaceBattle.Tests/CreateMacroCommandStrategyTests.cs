@@ -42,4 +42,22 @@ public class CreateMacroCommandStrategyTests
 
         Assert.Throws<Exception>(() => CreateMacro.Resolve(new object[0]));
     }
+    [Fact]
+    public void ResolveThrowsExceptionWhenCommandNotFound()
+    {
+        var MacroTestDependencies = new List<string> { "Commands.Test1", "Commands.Missing" };
+
+        Ioc.Resolve<App.ICommand>("IoC.Register", "Specs.Macro.Test", (object[] args) => MacroTestDependencies).Execute();
+
+        var mockTest1 = new Mock<ICommand>();
+
+        Ioc.Resolve<App.ICommand>("IoC.Register", "Commands.Test1", (object[] args) => mockTest1.Object).Execute();
+
+        var registerMc = new RegisterIoCDependencyMacroCommand();
+        registerMc.Execute();
+
+        var CreateMacro = new CreateMacroCommandStrategy("Macro.Test");
+
+        Assert.Throws<Exception>(() => CreateMacro.Resolve(new object[0]));
+    }
 }
