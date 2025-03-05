@@ -5,6 +5,24 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+  
+  <ItemGroup>
+  <Reference Include="core">
+    <HintPath>..\Common\core.dll</HintPath>
+  </Reference>
+  <Reference Include="scopes">
+    <HintPath>..\Common\scopes.dll</HintPath>
+  </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+  <Reference Include="core">
+    <HintPath>..\Common\core.dll</HintPath>
+  </Reference>
+  <Reference Include="scopes">
+    <HintPath>..\Common\scopes.dll</HintPath>
+  </Reference>
+  </ItemGroup>
 
   <ItemGroup>
   <Reference Include="core">
