@@ -1,4 +1,5 @@
-﻿using App;
+using App;
+
 namespace SpaceBattle.Lib;
 
 public class RegisterIoCDependencyMacroCommand : ICommand

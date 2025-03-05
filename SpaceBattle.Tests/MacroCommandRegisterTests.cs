@@ -1,6 +1,7 @@
-﻿using App;
+using App;
 using App.Scopes;
 using Moq;
+
 namespace SpaceBattle.Lib
 {
     public class MacroCommandRegisterTests
