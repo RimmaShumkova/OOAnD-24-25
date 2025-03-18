@@ -1,8 +1,7 @@
 ﻿namespace SpaceBattle.Lib;
 
-public interface IProjectile
+public interface IShootable
 {
     Vector StartPosition { get; }
-
     Vector Velocity { get; }
 }
