@@ -5,10 +5,8 @@ public class RegisterIoCDependencyShootCommand : ICommand
 {
     public void Execute()
     {
-        Ioc.Resolve<App.ICommand>(
-                "IoC.Register",
-                "Commands.Shoot",
-                (object arg) => new ShootCommand(arg)
-        ).Execute();
+        Ioc.Resolve<App.ICommand>("IoC.Register",
+                            "Commands.Shoot",
+        (object[] args) => new ShootCommand(Ioc.Resolve<IShootable>("Adapters.IShootableObject", args))).Execute();
     }
 }
