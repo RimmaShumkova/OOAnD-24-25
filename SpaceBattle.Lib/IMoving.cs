@@ -2,6 +2,6 @@
 
 public interface IMovable
 {
-    public Vector Veloсity { get; }
-    public Vector Position { get; set; }
+    Vector Veloсity { get; }
+    Vector Position { get; set; }
 }
