@@ -2,5 +2,5 @@
 
 public interface ICommandReceiver
 {
-    public void Receive(ICommand cmd);
+    void Receive(ICommand cmd);
 }
