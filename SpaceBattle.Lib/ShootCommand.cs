@@ -3,19 +3,16 @@ namespace SpaceBattle.Lib;
 
 public class ShootCommand : ICommand
 {
-    private readonly object shooter;
+    private readonly IShootable shooter;
 
-    public ShootCommand(object shooter)
+    public ShootCommand(IShootable shooter)
     {
         this.shooter = shooter;
     }
 
     public void Execute()
     {
-        _ = Ioc.Resolve<IProjectile>("Game.Projectile.Create");
-
-        var initialProperties = Ioc.Resolve<IDictionary<string, object>>("Game.Projectile.Properties", shooter);
-
-        Ioc.Resolve<ICommand>("Commands.Move", initialProperties).Execute();
+        var projectileProperties = Ioc.Resolve<IDictionary<string, object>>("Game.Projectile.Create", shooter);
+        Ioc.Resolve<ICommand>("Commands.Move", projectileProperties).Execute();
     }
 }
