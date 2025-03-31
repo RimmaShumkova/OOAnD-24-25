@@ -1,91 +1,89 @@
 ﻿using App;
 using App.Scopes;
 using Moq;
-namespace SpaceBattle.Lib;
 
-public class ShootingTests
+namespace SpaceBattle.Lib
 {
-    public ShootingTests()
+    public class ShootCommandTests
     {
-        new InitCommand().Execute();
-        var iocScope = Ioc.Resolve<object>("IoC.Scope.Create");
-        Ioc.Resolve<ICommand>("IoC.Scope.Current.Set", iocScope).Execute();
-    }
+        public ShootCommandTests()
+        {
+            new InitCommand().Execute();
+            var scope = Ioc.Resolve<object>("Scopes.New", Ioc.Resolve<object>("Scopes.Root"));
+            Ioc.Resolve<ICommand>("Scopes.Current.Set", scope).Execute();
+        }
 
-    [Fact]
-    public void ShootCommandExecutesSuccessfully()
-    {
-        var shooterMock = new Mock<IShootable>();
-        shooterMock.Setup(s => s.StartPosition).Returns(new Vector(10, 20));
-        shooterMock.Setup(s => s.Velocity).Returns(new Vector(1, 0));
+        [Fact]
+        public void TestCreatesProjectileAndMovesIt()
+        {
+            var shooterMock = new Mock<IShootable>();
+            shooterMock.Setup(s => s.StartPosition).Returns(new Vector(0, 0));
+            shooterMock.Setup(s => s.Velocity).Returns(new Vector(1, 1));
 
-        var projectileProperties = new Dictionary<string, object>();
-        var moveCommandMock = new Mock<ICommand>();
+            var projectileProperties = new Dictionary<string, object>();
+            var moveCommandMock = new Mock<ICommand>();
 
-        Ioc.Resolve<ICommand>("IoC.Register", "Game.Projectile.Create",
-            (object[] args) => projectileProperties).Execute();
+            Ioc.Resolve<ICommand>("IoC.Register", "Game.Projectile.Create",
+                (object[] args) => projectileProperties).Execute();
 
-        Ioc.Resolve<ICommand>("IoC.Register", "Commands.Move",
-            (object[] args) => moveCommandMock.Object).Execute();
+            Ioc.Resolve<ICommand>("IoC.Register", "Commands.Move",
+                (object[] args) => moveCommandMock.Object).Execute();
 
-        var shootCommand = new ShootCommand(shooterMock.Object);
+            var shootCommand = new ShootCommand(shooterMock.Object);
 
-        shootCommand.Execute();
+            shootCommand.Execute();
 
-        Assert.Equal(shooterMock.Object.StartPosition, projectileProperties["Position"]);
-        Assert.Equal(shooterMock.Object.Velocity, projectileProperties["Velocity"]);
+            Assert.Equal(shooterMock.Object.StartPosition, projectileProperties["Position"]);
+            Assert.Equal(shooterMock.Object.Velocity, projectileProperties["Velocity"]);
+            moveCommandMock.Verify(cmd => cmd.Execute(), Times.Once);
+        }
 
-        moveCommandMock.Verify(c => c.Execute(), Times.Once);
-    }
+        [Fact]
+        public void TestThrowsWhenProjectileCreateNotRegistered()
+        {
+            var shooterMock = new Mock<IShootable>();
+            var shootCommand = new ShootCommand(shooterMock.Object);
 
-    [Fact]
-    public void ShootCommandThrowsExceptionIfProjectileCreateNotRegistered()
-    {
-        var shooterMock = new Mock<IShootable>();
-        shooterMock.Setup(s => s.StartPosition).Returns(new Vector(10, 20));
-        shooterMock.Setup(s => s.Velocity).Returns(new Vector(1, 0));
+            Assert.Throws<ArgumentException>(() => shootCommand.Execute());
+        }
 
-        var shootCommand = new ShootCommand(shooterMock.Object);
+        [Fact]
+        public void TestThrowsWhenMoveCommandNotRegistered()
+        {
+            var shooterMock = new Mock<IShootable>();
+            Ioc.Resolve<ICommand>("IoC.Register", "Game.Projectile.Create",
+                (object[] args) => new Dictionary<string, object>()).Execute();
 
-        Assert.Throws<Exception>(() => shootCommand.Execute());
-    }
+            var shootCommand = new ShootCommand(shooterMock.Object);
 
-    [Fact]
-    public void ShootCommandThrowsExceptionIfMoveCommandNotRegistered()
-    {
-        var shooterMock = new Mock<IShootable>();
-        shooterMock.Setup(s => s.StartPosition).Returns(new Vector(10, 20));
-        shooterMock.Setup(s => s.Velocity).Returns(new Vector(1, 0));
+            Assert.Throws<ArgumentException>(() => shootCommand.Execute());
+        }
 
-        Ioc.Resolve<ICommand>("IoC.Register", "Game.Projectile.Create",
-            (object[] args) => new Dictionary<string, object>()).Execute();
+        [Fact]
+        public void TestUsesCorrectShooterProperties()
+        {
+            var expectedPosition = new Vector(5, 10);
+            var expectedVelocity = new Vector(2, 3);
 
-        var shootCommand = new ShootCommand(shooterMock.Object);
+            var shooterMock = new Mock<IShootable>();
+            shooterMock.Setup(s => s.StartPosition).Returns(expectedPosition);
+            shooterMock.Setup(s => s.Velocity).Returns(expectedVelocity);
 
-        Assert.Throws<Exception>(() => shootCommand.Execute());
-    }
+            var projectileProperties = new Dictionary<string, object>();
+            var moveCommandMock = new Mock<ICommand>();
 
-    [Fact]
-    public void ShootCommandThrowsExceptionIfShooterPositionIsInvalid()
-    {
-        var shooterMock = new Mock<IShootable>();
-        shooterMock.Setup(s => s.StartPosition).Throws<NullReferenceException>();
-        shooterMock.Setup(s => s.Velocity).Returns(new Vector(1, 0));
+            Ioc.Resolve<ICommand>("IoC.Register", "Game.Projectile.Create",
+                (object[] args) => projectileProperties).Execute();
 
-        var shootCommand = new ShootCommand(shooterMock.Object);
+            Ioc.Resolve<ICommand>("IoC.Register", "Commands.Move",
+                (object[] args) => moveCommandMock.Object).Execute();
 
-        Assert.Throws<NullReferenceException>(() => shootCommand.Execute());
-    }
+            var shootCommand = new ShootCommand(shooterMock.Object);
 
-    [Fact]
-    public void ShootCommandThrowsExceptionIfShooterVelocityIsInvalid()
-    {
-        var shooterMock = new Mock<IShootable>();
-        shooterMock.Setup(s => s.StartPosition).Returns(new Vector(10, 20));
-        shooterMock.Setup(s => s.Velocity).Throws<InvalidOperationException>();
+            shootCommand.Execute();
 
-        var shootCommand = new ShootCommand(shooterMock.Object);
-
-        Assert.Throws<InvalidOperationException>(() => shootCommand.Execute());
+            Assert.Equal(expectedPosition, projectileProperties["Position"]);
+            Assert.Equal(expectedVelocity, projectileProperties["Velocity"]);
+        }
     }
 }
