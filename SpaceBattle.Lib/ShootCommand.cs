@@ -13,6 +13,6 @@ public class ShootCommand : ICommand
     public void Execute()
     {
         var projectileProperties = Ioc.Resolve<IDictionary<string, object>>("Game.Projectile.Create", shooter);
-        Ioc.Resolve<ICommand>("Commands.Move", projectileProperties).Execute();
+        Ioc.Resolve<ICommand>("Actions.Start", projectileProperties, "Move").Execute();
     }
 }
