@@ -1,4 +1,5 @@
 using App;
+using App.Scopes;
 
 namespace SpaceBattle.Lib.Tests
 {
@@ -6,9 +7,9 @@ namespace SpaceBattle.Lib.Tests
     {
         public RegisterIoCDependencyAuthCheckTests()
         {
-            new InitScopeBasedIoCImplementationCommand().Execute();
-            Ioc.Resolve<ICommand>("Scopes.Current.Set",
-            Ioc.Resolve<object>("Scopes.New", Ioc.Resolve<object>("Scopes.Root"))).Execute();
+            new InitCommand().Execute();
+            var iocScope = Ioc.Resolve<object>("IoC.Scope.Create");
+            Ioc.Resolve<App.ICommand>("IoC.Scope.Current.Set", iocScope).Execute(); 
         }
 
         [Fact]
@@ -19,11 +20,11 @@ namespace SpaceBattle.Lib.Tests
                 { "ship1", new List<string> { "Action" } }
             };
 
-            Ioc.Resolve<ICommand>("IoC.Register",
+            Ioc.Resolve<App.ICommand>("IoC.Register",
                 "Authorization.GetPermissions",
                 new Func<object[], object>((object[] args) => (object)permissions)).Execute();
 
-            Ioc.Resolve<ICommand>("IoC.Register",
+            Ioc.Resolve<App.ICommand>("IoC.Register",
                 "Players.GetBelongings",
                 new Func<object[], object>((object[] args) => (object)new List<string>())).Execute();
 
@@ -40,7 +41,7 @@ namespace SpaceBattle.Lib.Tests
             var objectId = "ship1";
             var playerBelongings = new List<string> { "ship1", "ship2" };
 
-            Ioc.Resolve<ICommand>("IoC.Register",
+            Ioc.Resolve<App.ICommand>("IoC.Register",
                 "Players.GetBelongings",
                 new Func<object[], object>((object[] args) => (object)playerBelongings)).Execute();
 
@@ -58,7 +59,7 @@ namespace SpaceBattle.Lib.Tests
             var objectId = "ship3";
             var playerBelongings = new List<string> { "ship1", "ship2" };
 
-            Ioc.Resolve<ICommand>("IoC.Register",
+            Ioc.Resolve<App.ICommand>("IoC.Register",
                 "Players.GetBelongings",
                 new Func<object[], object>((object[] args) => (object)playerBelongings)).Execute();
 
@@ -75,7 +76,7 @@ namespace SpaceBattle.Lib.Tests
             var action = "Own";
             var objectId = "ship1";
 
-            Ioc.Resolve<ICommand>("IoC.Register",
+            Ioc.Resolve<App.ICommand>("IoC.Register",
                 "Players.GetBelongings",
                 new Func<object[], object?>((object[] args) => null)).Execute();
 
@@ -84,7 +85,8 @@ namespace SpaceBattle.Lib.Tests
 
             Assert.False(result);
         }
-[Fact]
+
+        [Fact]
         public void AuthCheck_Returns_True_When_Player_Has_Global_Permissions()
         {
             var subjectId = "player1";
@@ -96,7 +98,7 @@ namespace SpaceBattle.Lib.Tests
                 { "*", new List<string> { "Move", "Fire" } }
             };
 
-            Ioc.Resolve<ICommand>("IoC.Register",
+            Ioc.Resolve<App.ICommand>("IoC.Register",
                 "Authorization.GetPermissions",
                 new Func<object[], object>((object[] args) => (object)permissions)).Execute();
 
@@ -118,7 +120,7 @@ namespace SpaceBattle.Lib.Tests
                 { "ship2", new List<string> { "Move", "Fire" } }
             };
 
-            Ioc.Resolve<ICommand>("IoC.Register",
+            Ioc.Resolve<App.ICommand>("IoC.Register",
                 "Authorization.GetPermissions",
                 new Func<object[], object>((object[] args) => (object)permissions)).Execute();
 
@@ -140,7 +142,7 @@ namespace SpaceBattle.Lib.Tests
                 { "ship1", new List<string> { "*" } }
             };
 
-            Ioc.Resolve<ICommand>("IoC.Register",
+            Ioc.Resolve<App.ICommand>("IoC.Register",
                 "Authorization.GetPermissions",
                 new Func<object[], object>((object[] args) => (object)permissions)).Execute();
 
@@ -162,7 +164,7 @@ namespace SpaceBattle.Lib.Tests
                 { "ship1", new List<string> { "Move", "Fire" } }
             };
 
-            Ioc.Resolve<ICommand>("IoC.Register",
+            Ioc.Resolve<App.ICommand>("IoC.Register",
                 "Authorization.GetPermissions",
                 new Func<object[], object>((object[] args) => (object)permissions)).Execute();
 
@@ -184,7 +186,7 @@ namespace SpaceBattle.Lib.Tests
                 { "ship1", new List<string> { "Fire", "Repair" } }
             };
 
-            Ioc.Resolve<ICommand>("IoC.Register",
+            Ioc.Resolve<App.ICommand>("IoC.Register",
                 "Authorization.GetPermissions",
                 new Func<object[], object>((object[] args) => (object)permissions)).Execute();
 

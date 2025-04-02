@@ -6,7 +6,7 @@ public class RegisterIoCDependencyAuthCheck : ICommand
 {
     public void Execute()
     {
-        Ioc.Resolve<ICommand>(
+        Ioc.Resolve<App.ICommand>(
             "IoC.Register",
             "Authorization.Check",
             (object[] args) =>

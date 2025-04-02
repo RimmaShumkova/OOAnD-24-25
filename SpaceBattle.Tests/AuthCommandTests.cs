@@ -1,4 +1,5 @@
 ﻿using App;
+using App.Scopes;
 
 namespace SpaceBattle.Lib.Tests
 {
@@ -6,10 +7,9 @@ namespace SpaceBattle.Lib.Tests
     {
         public AuthCommandTests()
         {
-            new InitScopeBasedIoCImplementationCommand().Execute();
-            Ioc.Resolve<ICommand>("Scopes.Current.Set",
-                Ioc.Resolve<object>("Scopes.New",
-                    Ioc.Resolve<object>("Scopes.Root"))).Execute();
+            new InitCommand().Execute();
+            var iocScope = Ioc.Resolve<object>("IoC.Scope.Create");
+            Ioc.Resolve<App.ICommand>("IoC.Scope.Current.Set", iocScope).Execute(); 
         }
 
         [Fact]
@@ -19,7 +19,7 @@ namespace SpaceBattle.Lib.Tests
             var action = "Move";
             var objectId = "ship1";
 
-            Ioc.Resolve<ICommand>("IoC.Register",
+            Ioc.Resolve<App.ICommand>("IoC.Register",
                 "Authorization.Check",
                 new Func<object[], object>((object[] args) => (object)true)).Execute();
 
@@ -35,7 +35,7 @@ namespace SpaceBattle.Lib.Tests
             var action = "Move";
             var objectId = "ship1";
 
-            Ioc.Resolve<ICommand>("IoC.Register",
+            Ioc.Resolve<App.ICommand>("IoC.Register",
                 "Authorization.Check",
                 new Func<object[], object>((object[] args) => (object)false)).Execute();
 
@@ -68,7 +68,7 @@ namespace SpaceBattle.Lib.Tests
             string? capturedAction = null;
             string? capturedObjectId = null;
 
-            Ioc.Resolve<ICommand>("IoC.Register",
+            Ioc.Resolve<App.ICommand>("IoC.Register",
                 "Authorization.Check",
                 new Func<object[], object>((object[] args) =>
                 {
@@ -85,18 +85,6 @@ namespace SpaceBattle.Lib.Tests
             Assert.Equal(subjectId, capturedSubjectId);
             Assert.Equal(action, capturedAction);
             Assert.Equal(objectId, capturedObjectId);
-        }
-    }
-
-    internal class InitScopeBasedIoCImplementationCommand
-    {
-        public InitScopeBasedIoCImplementationCommand()
-        {
-        }
-
-        internal void Execute()
-        {
-            throw new NotImplementedException();
         }
     }
 }
