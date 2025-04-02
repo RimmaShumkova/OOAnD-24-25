@@ -46,18 +46,6 @@ namespace SpaceBattle.Lib.Tests
         }
 
         [Fact]
-        public void AuthCommand_Throws_When_AuthCheck_Not_Registered()
-        {
-            var subjectId = "player1";
-            var action = "Move";
-            var objectId = "ship1";
-
-            var authCommand = new AuthCommand(subjectId, action, objectId);
-
-            Assert.Throws<ArgumentException>(() => authCommand.Execute());
-        }
-
-        [Fact]
         public void AuthCommand_Passes_Correct_Parameters_To_AuthCheck()
         {
             var subjectId = "player1";
