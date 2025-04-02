@@ -9,7 +9,7 @@ namespace SpaceBattle.Lib.Tests
         {
             new InitCommand().Execute();
             var iocScope = Ioc.Resolve<object>("IoC.Scope.Create");
-            Ioc.Resolve<App.ICommand>("IoC.Scope.Current.Set", iocScope).Execute(); 
+            Ioc.Resolve<App.ICommand>("IoC.Scope.Current.Set", iocScope).Execute();
         }
 
         [Fact]
