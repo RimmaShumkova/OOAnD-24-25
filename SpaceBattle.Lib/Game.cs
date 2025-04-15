@@ -1,64 +1,48 @@
 using System.Diagnostics;
 
-namespace SpaceBattle.Lib
+namespace SpaceBattle.Lib;
+
+public class Game : ICommand
 {
-    public interface IQueue
+    private readonly IQueue _gameQueue;
+    private readonly Stopwatch _gameTimer;
+
+    public Game(object queue)
     {
-        ICommand Get();
-        int Count();
+        _gameQueue = (IQueue)queue;
+        _gameTimer = new Stopwatch();
     }
-    public class Game : ICommand
+
+    public void Execute()
     {
-        private readonly IQueue? _gameQueue;
-        private readonly Stopwatch _gameTimer;
+        _gameTimer.Start();
 
-        public Game(object queue)
+        while (IsActive())
         {
-            _gameQueue = queue as IQueue;
-            _gameTimer = new Stopwatch();
+            ProcessCommand();
         }
 
-        public void Execute()
+        _gameTimer.Reset();
+    }
+
+    private bool IsActive()
+    {
+        return _gameTimer.ElapsedMilliseconds < 50
+            && _gameQueue.Count() > 0;
+    }
+
+    private void ProcessCommand()
+    {
+        var command = _gameQueue.Get();
+
+        try
         {
-            if (_gameQueue == null || _gameQueue.Count() == 0)
-            {
-                return;
-            }
-
-            _gameTimer.Start();
-
-            while (IsActive())
-            {
-                ProcessCommand();
-            }
-
-            _gameTimer.Reset();
+            command.Execute();
         }
-
-        private bool IsActive()
+        catch
         {
-            return _gameTimer.ElapsedMilliseconds < 50
-                && _gameQueue != null
-                && _gameQueue.Count() > 0;
-        }
-
-        private void ProcessCommand()
-        {
-            if (_gameQueue == null)
-            {
-                return;
-            }
-
-            var command = _gameQueue.Get();
-
-            try
-            {
-                command.Execute();
-            }
-            catch
-            {
-                throw new Exception("Error executing command");
-            }
+            throw new Exception("Error executing command");
         }
     }
 }
+
