@@ -1,4 +1,6 @@
 using System.Diagnostics;
+using App;
+using App.Scopes;
 using Moq;
 using SpaceBattle.Lib;
 
@@ -6,57 +8,58 @@ namespace SpaceBattle.Tests;
 
 public class GameTests
 {
-    private readonly Mock<ICommand> _commandMock = new();
-    private readonly Mock<IQueue> _queueMock = new();
-
-    [Fact]
-    public void Constructor_NullQueue_InitializesCorrectly()
+    public GameTests()
     {
-        var game = new Game(null);
-        Assert.NotNull(game);
+        new InitCommand().Execute();
+        var iocScope = Ioc.Resolve<object>("IoC.Scope.Create");
+        Ioc.Resolve<App.ICommand>("IoC.Scope.Current.Set", iocScope).Execute();
     }
+    private readonly Mock<SpaceBattle.Lib.ICommand> mock_cmd = new();
+    private readonly Mock<IQueue> mock_queue = new();
 
     [Fact]
-    public void Constructor_InvalidObject_InitializesWithNullQueue()
+    public void ConstructorInvalidObjectInitializesWithNullQueue()
     {
         var game = new Game(new object());
         Assert.NotNull(game);
     }
 
     [Fact]
-    public void Execute_CommandsInQueue_ExecutesAtLeastOneWithinTime()
+    public void ExecuteCommandsInQueueExecutesAtLeastOneWithinTime()
     {
-        _commandMock.Setup(c => c.Execute()).Verifiable();
-        _queueMock.Setup(q => q.Get()).Returns(_commandMock.Object);
-        _queueMock.Setup(q => q.Count()).Returns(3);
+        mock_cmd.Setup(c => c.Execute()).Verifiable();
+        mock_queue.Setup(q => q.Get()).Returns(mock_cmd.Object);
+        mock_queue.Setup(q => q.Count()).Returns(3);
 
-        var game = new Game(_queueMock.Object);
+        Ioc.Resolve<App.ICommand>("IoC.Register", "Game.Get.Time.Quantum", (object[] args) => 50).Execute();
+
+        var game = new Game(mock_queue.Object);
         var stopwatch = Stopwatch.StartNew();
 
         game.Execute();
         stopwatch.Stop();
 
-        _commandMock.Verify(c => c.Execute(), Times.AtLeastOnce());
+        mock_cmd.Verify(c => c.Execute(), Times.AtLeastOnce());
         Assert.True(stopwatch.ElapsedMilliseconds < 60);
     }
 
     [Fact]
-    public void Execute_EmptyQueue_NoCommandsRunAndFastExit()
+    public void ExecuteEmptyQueueNoCommandsRunAndFastExit()
     {
-        _queueMock.Setup(q => q.Count()).Returns(0);
+        mock_queue.Setup(q => q.Count()).Returns(0);
 
-        var game = new Game(_queueMock.Object);
+        var game = new Game(mock_queue.Object);
         var stopwatch = Stopwatch.StartNew();
 
         game.Execute();
         stopwatch.Stop();
 
-        _commandMock.Verify(c => c.Execute(), Times.Never());
+        mock_cmd.Verify(c => c.Execute(), Times.Never());
         Assert.True(stopwatch.ElapsedMilliseconds < 20);
     }
 
     [Fact]
-    public void Execute_NullQueue_NoCommandsRunAndFastExit()
+    public void ExecuteNullQueueNoCommandsRunAndFastExit()
     {
         var game = new Game(null);
         var stopwatch = Stopwatch.StartNew();
@@ -64,85 +67,85 @@ public class GameTests
         game.Execute();
         stopwatch.Stop();
 
-        _commandMock.Verify(c => c.Execute(), Times.Never());
+        mock_cmd.Verify(c => c.Execute(), Times.Never());
         Assert.True(stopwatch.ElapsedMilliseconds < 5);
     }
 
     [Fact]
-    public void Execute_CommandThrowsException_StopsWithError()
+    public void ExecuteCommandThrowsExceptionStopsWithError()
     {
-        _commandMock.Setup(c => c.Execute()).Throws<Exception>();
-        _queueMock.Setup(q => q.Get()).Returns(_commandMock.Object);
-        _queueMock.Setup(q => q.Count()).Returns(3);
+        mock_cmd.Setup(c => c.Execute()).Throws<Exception>();
+        mock_queue.Setup(q => q.Get()).Returns(mock_cmd.Object);
+        mock_queue.Setup(q => q.Count()).Returns(3);
 
-        var game = new Game(_queueMock.Object);
+        var game = new Game(mock_queue.Object);
 
         var exception = Assert.Throws<Exception>(() => game.Execute());
         Assert.Equal("Error executing command", exception.Message);
-        _commandMock.Verify(c => c.Execute(), Times.Once());
+        mock_cmd.Verify(c => c.Execute(), Times.Once());
     }
 
     [Fact]
-    public void Execute_QueueGetThrowsException_FailsWithError()
+    public void ExecuteQueueGetThrowsExceptionFailsWithError()
     {
-        _queueMock.Setup(q => q.Get()).Throws<Exception>();
-        _queueMock.Setup(q => q.Count()).Returns(3);
+        mock_queue.Setup(q => q.Get()).Throws<Exception>();
+        mock_queue.Setup(q => q.Count()).Returns(3);
 
-        var game = new Game(_queueMock.Object);
+        var game = new Game(mock_queue.Object);
 
         Assert.Throws<Exception>(() => game.Execute());
     }
 
     [Fact]
-    public void Execute_QueueCountThrowsException_FailsWithError()
+    public void ExecuteQueueCountThrowsExceptionFailsWithError()
     {
-        _queueMock.Setup(q => q.Count()).Throws<Exception>();
+        mock_queue.Setup(q => q.Count()).Throws<Exception>();
 
-        var game = new Game(_queueMock.Object);
+        var game = new Game(mock_queue.Object);
 
         Assert.Throws<Exception>(() => game.Execute());
     }
 
     [Fact]
-    public void Execute_TimeExpires_StopsExecution()
+    public void ExecuteTimeExpiresStopsExecution()
     {
-        _commandMock.Setup(c => c.Execute()).Callback(() => Thread.Sleep(60)); // Задержка больше 50 мс
-        _queueMock.Setup(q => q.Get()).Returns(_commandMock.Object);
-        _queueMock.Setup(q => q.Count()).Returns(10);
+        mock_cmd.Setup(c => c.Execute()).Callback(() => Thread.Sleep(60)); // Задержка больше 50 мс
+        mock_queue.Setup(q => q.Get()).Returns(mock_cmd.Object);
+        mock_queue.Setup(q => q.Count()).Returns(10);
 
-        var game = new Game(_queueMock.Object);
+        var game = new Game(mock_queue.Object);
 
         game.Execute();
 
-        _commandMock.Verify(c => c.Execute(), Times.AtMost(2)); // Не более 2 команд из-за времени
+        mock_cmd.Verify(c => c.Execute(), Times.AtMost(2)); // Не более 2 команд из-за времени
     }
 
     [Fact]
-    public void Execute_QueueBecomesEmpty_StopsExecution()
+    public void ExecuteQueueBecomesEmptyStopsExecution()
     {
         var count = 2;
-        _commandMock.Setup(c => c.Execute()).Verifiable();
-        _queueMock.Setup(q => q.Get())
-            .Returns(_commandMock.Object)
+        mock_cmd.Setup(c => c.Execute()).Verifiable();
+        mock_queue.Setup(q => q.Get())
+            .Returns(mock_cmd.Object)
             .Callback(() => count--); // Уменьшаем count после Get
-        _queueMock.Setup(q => q.Count())
+        mock_queue.Setup(q => q.Count())
             .Returns(() => count);
 
-        var game = new Game(_queueMock.Object);
+        var game = new Game(mock_queue.Object);
 
         game.Execute();
 
-        _commandMock.Verify(c => c.Execute(), Times.Exactly(2));
+        mock_cmd.Verify(c => c.Execute(), Times.Exactly(2));
     }
 
     [Fact]
-    public void Execute_ResetsTimerAfterExecution()
+    public void ExecuteResetsTimerAfterExecution()
     {
-        _commandMock.Setup(c => c.Execute()).Verifiable();
-        _queueMock.Setup(q => q.Get()).Returns(_commandMock.Object);
-        _queueMock.Setup(q => q.Count()).Returns(1);
+        mock_cmd.Setup(c => c.Execute()).Verifiable();
+        mock_queue.Setup(q => q.Get()).Returns(mock_cmd.Object);
+        mock_queue.Setup(q => q.Count()).Returns(1);
 
-        var game = new Game(_queueMock.Object);
+        var game = new Game(mock_queue.Object);
         game.Execute();
 
         var fieldInfo = typeof(Game).GetField("_gameTimer", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
