@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using App;
 
 namespace SpaceBattle.Lib;
 
@@ -27,7 +28,7 @@ public class Game : ICommand
 
     private bool IsActive()
     {
-        return _gameTimer.ElapsedMilliseconds < 50
+        return _gameTimer.ElapsedMilliseconds < Ioc.Resolve<int>("Game.Get.Time.Quantum")
             && _gameQueue.Count() > 0;
     }
 
