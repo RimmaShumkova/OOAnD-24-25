@@ -20,6 +20,11 @@ namespace SpaceBattle.Lib
 
         public void Execute()
         {
+            if (_gameQueue == null || _gameQueue.Count() == 0)
+            {
+                return;
+            }
+
             _gameTimer.Start();
 
             while (IsActive())
