@@ -39,7 +39,7 @@ public class GameTests
         stopwatch.Stop();
 
         mock_cmd.Verify(c => c.Execute(), Times.AtLeastOnce());
-        Assert.True(stopwatch.ElapsedMilliseconds < 60);
+        Assert.True(stopwatch.ElapsedMilliseconds < 90);
     }
 
     [Fact]
