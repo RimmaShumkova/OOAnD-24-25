@@ -9,6 +9,6 @@ public class RegisterIoCDependencyGameCommand : ICommand
         Ioc.Resolve<App.ICommand>(
                 "IoC.Register",
                 "Commands.Game",
-                (object arg) => new GameCommand((ICommand[])arg)).Execute();
+                (object[] args) => new GameCommand(args[0])).Execute();
     }
 }
