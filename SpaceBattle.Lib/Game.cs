@@ -6,7 +6,7 @@ namespace SpaceBattle.Lib
     {
         ICommand Get();
         int Count();
-    } 
+    }
     public class Game : ICommand
     {
         private readonly IQueue? _gameQueue;

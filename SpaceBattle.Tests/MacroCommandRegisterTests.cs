@@ -1,4 +1,4 @@
-﻿using App;
+using App;
 using App.Scopes;
 using Moq;
 
