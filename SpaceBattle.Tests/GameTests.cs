@@ -18,10 +18,9 @@ public class GameTests
     private readonly Mock<IQueue> mock_queue = new();
 
     [Fact]
-    public void ConstructorInvalidObjectInitializesWithNullQueue()
+    public void ConstructorInvalidObjectThrowsExceptionNullQueue()
     {
-        var game = new Game(new object());
-        Assert.NotNull(game);
+        Assert.Throws<InvalidCastException>(() => new Game(new object()));
     }
 
     [Fact]
@@ -31,7 +30,7 @@ public class GameTests
         mock_queue.Setup(q => q.Get()).Returns(mock_cmd.Object);
         mock_queue.Setup(q => q.Count()).Returns(3);
 
-        Ioc.Resolve<App.ICommand>("IoC.Register", "Game.Get.Time.Quantum", (object[] args) => 50).Execute();
+        Ioc.Resolve<App.ICommand>("IoC.Register", "Game.Get.Time.Quantum", (object[] args) => (object)50).Execute();
 
         var game = new Game(mock_queue.Object);
         var stopwatch = Stopwatch.StartNew();
@@ -48,6 +47,8 @@ public class GameTests
     {
         mock_queue.Setup(q => q.Count()).Returns(0);
 
+        Ioc.Resolve<App.ICommand>("IoC.Register", "Game.Get.Time.Quantum", (object[] args) => (object)50).Execute();
+
         var game = new Game(mock_queue.Object);
         var stopwatch = Stopwatch.StartNew();
 
@@ -59,24 +60,13 @@ public class GameTests
     }
 
     [Fact]
-    public void ExecuteNullQueueNoCommandsRunAndFastExit()
-    {
-        var game = new Game(null);
-        var stopwatch = Stopwatch.StartNew();
-
-        game.Execute();
-        stopwatch.Stop();
-
-        mock_cmd.Verify(c => c.Execute(), Times.Never());
-        Assert.True(stopwatch.ElapsedMilliseconds < 5);
-    }
-
-    [Fact]
     public void ExecuteCommandThrowsExceptionStopsWithError()
     {
         mock_cmd.Setup(c => c.Execute()).Throws<Exception>();
         mock_queue.Setup(q => q.Get()).Returns(mock_cmd.Object);
         mock_queue.Setup(q => q.Count()).Returns(3);
+
+        Ioc.Resolve<App.ICommand>("IoC.Register", "Game.Get.Time.Quantum", (object[] args) => (object)50).Execute();
 
         var game = new Game(mock_queue.Object);
 
@@ -113,6 +103,8 @@ public class GameTests
         mock_queue.Setup(q => q.Get()).Returns(mock_cmd.Object);
         mock_queue.Setup(q => q.Count()).Returns(10);
 
+        Ioc.Resolve<App.ICommand>("IoC.Register", "Game.Get.Time.Quantum", (object[] args) => (object)50).Execute();
+
         var game = new Game(mock_queue.Object);
 
         game.Execute();
@@ -131,6 +123,8 @@ public class GameTests
         mock_queue.Setup(q => q.Count())
             .Returns(() => count);
 
+        Ioc.Resolve<App.ICommand>("IoC.Register", "Game.Get.Time.Quantum", (object[] args) => (object)50).Execute();
+
         var game = new Game(mock_queue.Object);
 
         game.Execute();
@@ -144,6 +138,8 @@ public class GameTests
         mock_cmd.Setup(c => c.Execute()).Verifiable();
         mock_queue.Setup(q => q.Get()).Returns(mock_cmd.Object);
         mock_queue.Setup(q => q.Count()).Returns(1);
+
+        Ioc.Resolve<App.ICommand>("IoC.Register", "Game.Get.Time.Quantum", (object[] args) => (object)50).Execute();
 
         var game = new Game(mock_queue.Object);
         game.Execute();
