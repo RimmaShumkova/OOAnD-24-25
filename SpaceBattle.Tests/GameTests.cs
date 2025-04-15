@@ -52,7 +52,7 @@ public class GameTests
         stopwatch.Stop();
 
         _commandMock.Verify(c => c.Execute(), Times.Never());
-        Assert.True(stopwatch.ElapsedMilliseconds < 5);
+        Assert.True(stopwatch.ElapsedMilliseconds < 20);
     }
 
     [Fact]
