@@ -20,7 +20,7 @@ public class GameTests
     [Fact]
     public void ConstructorInvalidObjectThrowsExceptionNullQueue()
     {
-        Assert.Throws<InvalidCastException>(() => new Game(new object()));
+        Assert.Throws<InvalidCastException>(() => new GameCommand(new object()));
     }
 
     [Fact]
@@ -32,10 +32,10 @@ public class GameTests
 
         Ioc.Resolve<App.ICommand>("IoC.Register", "Game.Get.Time.Quantum", (object[] args) => (object)50).Execute();
 
-        var game = new Game(mock_queue.Object);
+        var gameCmd = new GameCommand(mock_queue.Object);
         var stopwatch = Stopwatch.StartNew();
 
-        game.Execute();
+        gameCmd.Execute();
         stopwatch.Stop();
 
         mock_cmd.Verify(c => c.Execute(), Times.AtLeastOnce());
@@ -49,10 +49,10 @@ public class GameTests
 
         Ioc.Resolve<App.ICommand>("IoC.Register", "Game.Get.Time.Quantum", (object[] args) => (object)50).Execute();
 
-        var game = new Game(mock_queue.Object);
+        var gameCmd = new GameCommand(mock_queue.Object);
         var stopwatch = Stopwatch.StartNew();
 
-        game.Execute();
+        gameCmd.Execute();
         stopwatch.Stop();
 
         mock_cmd.Verify(c => c.Execute(), Times.Never());
@@ -68,9 +68,9 @@ public class GameTests
 
         Ioc.Resolve<App.ICommand>("IoC.Register", "Game.Get.Time.Quantum", (object[] args) => (object)50).Execute();
 
-        var game = new Game(mock_queue.Object);
+        var gameCmd = new GameCommand(mock_queue.Object);
 
-        var exception = Assert.Throws<Exception>(() => game.Execute());
+        var exception = Assert.Throws<Exception>(() => gameCmd.Execute());
         Assert.Equal("Error executing command", exception.Message);
         mock_cmd.Verify(c => c.Execute(), Times.Once());
     }
@@ -81,9 +81,9 @@ public class GameTests
         mock_queue.Setup(q => q.Get()).Throws<Exception>();
         mock_queue.Setup(q => q.Count()).Returns(3);
 
-        var game = new Game(mock_queue.Object);
+        var gameCmd = new GameCommand(mock_queue.Object);
 
-        Assert.Throws<Exception>(() => game.Execute());
+        Assert.Throws<Exception>(() => gameCmd.Execute());
     }
 
     [Fact]
@@ -91,9 +91,9 @@ public class GameTests
     {
         mock_queue.Setup(q => q.Count()).Throws<Exception>();
 
-        var game = new Game(mock_queue.Object);
+        var gameCmd = new GameCommand(mock_queue.Object);
 
-        Assert.Throws<Exception>(() => game.Execute());
+        Assert.Throws<Exception>(() => gameCmd.Execute());
     }
 
     [Fact]
@@ -105,9 +105,9 @@ public class GameTests
 
         Ioc.Resolve<App.ICommand>("IoC.Register", "Game.Get.Time.Quantum", (object[] args) => (object)50).Execute();
 
-        var game = new Game(mock_queue.Object);
+        var gameCmd = new GameCommand(mock_queue.Object);
 
-        game.Execute();
+        gameCmd.Execute();
 
         mock_cmd.Verify(c => c.Execute(), Times.AtMost(2)); // Не более 2 команд из-за времени
     }
@@ -125,9 +125,9 @@ public class GameTests
 
         Ioc.Resolve<App.ICommand>("IoC.Register", "Game.Get.Time.Quantum", (object[] args) => (object)50).Execute();
 
-        var game = new Game(mock_queue.Object);
+        var gameCmd = new GameCommand(mock_queue.Object);
 
-        game.Execute();
+        gameCmd.Execute();
 
         mock_cmd.Verify(c => c.Execute(), Times.Exactly(2));
     }
@@ -141,11 +141,11 @@ public class GameTests
 
         Ioc.Resolve<App.ICommand>("IoC.Register", "Game.Get.Time.Quantum", (object[] args) => (object)50).Execute();
 
-        var game = new Game(mock_queue.Object);
-        game.Execute();
+        var gameCmd = new GameCommand(mock_queue.Object);
+        gameCmd.Execute();
 
-        var fieldInfo = typeof(Game).GetField("_gameTimer", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-        var timer = (Stopwatch)fieldInfo.GetValue(game);
+        var fieldInfo = typeof(GameCommand).GetField("_gameTimer", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        var timer = (Stopwatch)fieldInfo.GetValue(gameCmd);
         Assert.False(timer.IsRunning);
         Assert.Equal(0, timer.ElapsedMilliseconds);
     }
