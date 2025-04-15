@@ -5,6 +5,20 @@ using SpaceBattle.Lib;
 public class AddGameObjectCommandTests
 {
     [Fact]
+    public void Execute_HandlesNonStringId_ConvertsToString()
+    {
+        var repository = new Dictionary<string, Dictionary<string, object>>();
+        var nonStringId = 12345;
+        var gameObject = new Dictionary<string, object> { { "Id", nonStringId } };
+        var command = new AddGameObjectCommand(repository, gameObject);
+
+        command.Execute();
+
+        Assert.True(repository.ContainsKey("12345"));
+        Assert.Same(gameObject, repository["12345"]);
+    }
+
+    [Fact]
     public void Execute_AssignsId_WhenNotPresent_AndAddsGameObject()
     {
         var gameItems = new Dictionary<string, Dictionary<string, object>>();
@@ -50,7 +64,7 @@ public class AddGameObjectCommandTests
     public void Execute_ThrowsException_WhenIdIsNull()
     {
         var repository = new Dictionary<string, Dictionary<string, object>>();
-        var gameObject = new Dictionary<string, object> { { "Id", null! } }; // Явное подавление предупреждения
+        var gameObject = new Dictionary<string, object> { { "Id", null! } };
         var command = new AddGameObjectCommand(repository, gameObject);
         var ex = Assert.Throws<InvalidOperationException>(() => command.Execute());
         Assert.Equal("Идентификатор объекта не может быть null.", ex.Message);
@@ -86,7 +100,7 @@ public class RemoveGameObjectCommandTests
     [Fact]
     public void Constructor_ThrowsArgumentNullException_WhenObjectsStorageIsNull()
     {
-        var ex = Assert.Throws<ArgumentNullException>(() => new RemoveGameObjectCommand(null!, "id")); // Явное подавление предупреждения
+        var ex = Assert.Throws<ArgumentNullException>(() => new RemoveGameObjectCommand(null!, "id"));
         Assert.Equal("Хранилище объектов не может быть null. (Parameter 'objectsStorage')", ex.Message);
     }
 
@@ -94,7 +108,7 @@ public class RemoveGameObjectCommandTests
     public void Constructor_ThrowsArgumentException_WhenItemIdIsNull()
     {
         var repository = new Dictionary<string, Dictionary<string, object>>();
-        var ex = Assert.Throws<ArgumentException>(() => new RemoveGameObjectCommand(repository, null!)); // Явное подавление предупреждения
+        var ex = Assert.Throws<ArgumentException>(() => new RemoveGameObjectCommand(repository, null!));
         Assert.Equal("Идентификатор объекта не может быть пустым. (Parameter 'itemId')", ex.Message);
     }
 
