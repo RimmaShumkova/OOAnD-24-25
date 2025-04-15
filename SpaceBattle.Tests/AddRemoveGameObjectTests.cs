@@ -5,7 +5,7 @@ using SpaceBattle.Lib;
 public class AddGameObjectCommandTests
 {
     [Fact]
-    public void Execute_HandlesNonStringId_ConvertsToString()
+    public void Execute_HandlesNonStringId_ConvertsToString() //обработка нестроковых ID 
     {
         var repository = new Dictionary<string, Dictionary<string, object>>();
         var nonStringId = 12345;
