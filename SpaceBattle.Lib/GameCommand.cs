@@ -3,12 +3,12 @@ using App;
 
 namespace SpaceBattle.Lib;
 
-public class Game : ICommand
+public class GameCommand : ICommand
 {
     private readonly IQueue _gameQueue;
     private readonly Stopwatch _gameTimer;
 
-    public Game(object queue)
+    public GameCommand(object queue)
     {
         _gameQueue = (IQueue)queue;
         _gameTimer = new Stopwatch();
