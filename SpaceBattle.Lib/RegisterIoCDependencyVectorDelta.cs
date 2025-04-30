@@ -1,4 +1,4 @@
-using App;
+﻿using App;
 namespace SpaceBattle.Lib;
 
 public class RegisterIoCDependencyVectorDelta : ICommand
