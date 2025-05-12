@@ -26,7 +26,7 @@ public class AddGameObjectCommand : ICommand
             {
                 throw new InvalidOperationException("Идентификатор объекта не может быть null.");
             }
-        
+
             itemId = idValue.ToString() ?? string.Empty;
             if (string.IsNullOrEmpty(itemId))
             {
