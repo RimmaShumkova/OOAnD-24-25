@@ -28,6 +28,11 @@ public class AddGameObjectCommand : ICommand
             }
 
             itemId = idValue.ToString();
+
+            if (itemId == null)
+            {
+                throw new InvalidOperationException("Идентификатор объекта не может быть null.");
+            }
         }
 
         if (_itemsCollection.ContainsKey(itemId))
