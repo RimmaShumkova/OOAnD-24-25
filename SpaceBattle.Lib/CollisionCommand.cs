@@ -3,26 +3,23 @@ namespace SpaceBattle.Lib;
 
 public class CollisionCommand : ICommand
 {
-    private readonly IColliding firstObj;
-
-    private readonly IColliding secondObj;
-
+    private readonly IColliding firstObject;
+    private readonly IColliding secondObject;
     private readonly ICommand command;
 
-    public CollisionCommand(IColliding firstObj, IColliding secondObj, ICommand command)
+    public CollisionCommand(IColliding firstObject, IColliding secondObject, ICommand command)
     {
-        this.firstObj = firstObj;
-        this.secondObj = secondObj;
+        this.firstObject = firstObject;
+        this.secondObject = secondObject;
         this.command = command;
     }
     public void Execute()
     {
-        var deltaPosition = Ioc.Resolve<Array>("Game.GetVectorDifference", firstObj.Position, secondObj.Position);
+        var deltaPosition = Ioc.Resolve<Array>("Game.GetVectorDifference", firstObject.Position, secondObject.Position);
+        var deltaVelocity = Ioc.Resolve<Array>("Game.GetVectorDifference", firstObject.Velocity, secondObject.Velocity);
 
-        var deltaVelocity = Ioc.Resolve<Array>("Game.GetVectorDifference", firstObj.Velocity, secondObj.Velocity);
-
-        var isCollision = Ioc.Resolve<bool>("Game.IsCollision", deltaPosition, deltaVelocity, firstObj.Shape, secondObj.Shape);
-        if (isCollision)
+        var isColliding = Ioc.Resolve<bool>("Game.IsColliding", deltaPosition, deltaVelocity, firstObject.Shape, secondObject.Shape);
+        if (isColliding)
         {
             command.Execute();
         }
