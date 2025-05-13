@@ -47,5 +47,12 @@ namespace SpaceBattle.Lib
             collCmd1.Verify(cmd => cmd.Execute(), Times.Once);
             collCmd2.Verify(cmd => cmd.Execute(), Times.Once);
         }
+
+        [Fact]
+        public void Constructor_ShouldThrow_WhenNullArgument()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+                new CheckingSquareCollisionCommand(null!));
+        }
     }
 }

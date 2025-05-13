@@ -8,6 +8,11 @@ namespace SpaceBattle.Lib
 
         public CheckingSquareCollisionCommand(IColliding collObj)
         {
+            if (collObj is null)
+            {
+                throw new ArgumentNullException(nameof(collObj));
+            }
+
             this.collObj = collObj;
         }
 
