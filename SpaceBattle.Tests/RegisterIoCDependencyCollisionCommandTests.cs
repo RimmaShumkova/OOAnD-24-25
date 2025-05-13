@@ -19,10 +19,10 @@ public class RegisterIoCDependencyCollisionCommandTests
         var mockSecondObject = new Mock<IColliding>();
         var mockCommand = new Mock<ICommand>();
 
-        var registerCommand  = new RegisterIoCDependencyCollisionCommand();
+        var registerCommand = new RegisterIoCDependencyCollisionCommand();
         registerCommand.Execute();
 
-        var resolvedCommand  = Ioc.Resolve<ICommand>("Game.CollisionCommand",
+        var resolvedCommand = Ioc.Resolve<ICommand>("Game.CollisionCommand",
                 mockFirstObject.Object,
                 mockSecondObject.Object,
                 mockCommand.Object);
