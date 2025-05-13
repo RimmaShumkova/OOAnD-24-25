@@ -19,14 +19,14 @@ public class RegisterIoCDependencyGameObjTests
 
         var gameObj = new Dictionary<string, object>
         {
-            { "Id", "Id" }
+            { "Id", "Id-test" }
         };
 
         Ioc.Resolve<SpaceBattle.Lib.ICommand>("GameObject.Add", gameObj).Execute();
 
-        var retrieved = Ioc.Resolve<Dictionary<string, object>>("GameObject.Get", "Id");
+        var retrieved = Ioc.Resolve<Dictionary<string, object>>("GameObject.Get", "Id-test");
 
-        Assert.Equal("Id", retrieved["Id"]);
+        Assert.Equal("Id-test", retrieved["Id"]);
     }
 
     [Fact]
@@ -34,11 +34,11 @@ public class RegisterIoCDependencyGameObjTests
     {
         new RegisterIoCDependencyGameObj().Execute();
 
-        var gameObj = new Dictionary<string, object> { { "Id", "Id" } };
+        var gameObj = new Dictionary<string, object> { { "Id", "Id-test" } };
 
         Ioc.Resolve<SpaceBattle.Lib.ICommand>("GameObject.Add", gameObj).Execute();
 
-        var retrieved = Ioc.Resolve<Dictionary<string, object>>("GameObject.Get", "Id");
+        var retrieved = Ioc.Resolve<Dictionary<string, object>>("GameObject.Get", "Id-test");
 
         Assert.NotNull(retrieved);
         Assert.Equal(gameObj, retrieved);
@@ -48,7 +48,7 @@ public class RegisterIoCDependencyGameObjTests
     public void GameObject_Add_Duplicate_ShouldThrowException()
     {
         new RegisterIoCDependencyGameObj().Execute();
-        var gameObj = new Dictionary<string, object> { { "Id", "Id" } };
+        var gameObj = new Dictionary<string, object> { { "Id", "Id-test" } };
 
         Ioc.Resolve<SpaceBattle.Lib.ICommand>("GameObject.Add", gameObj).Execute();
 
@@ -62,14 +62,14 @@ public class RegisterIoCDependencyGameObjTests
     public void GameObject_Remove_ShouldRemoveItem()
     {
         new RegisterIoCDependencyGameObj().Execute();
-        var gameObj = new Dictionary<string, object> { { "Id", "Id" } };
+        var gameObj = new Dictionary<string, object> { { "Id", "Id-test" } };
 
         Ioc.Resolve<SpaceBattle.Lib.ICommand>("GameObject.Add", gameObj).Execute();
-        Ioc.Resolve<SpaceBattle.Lib.ICommand>("GameObject.Remove", "Id").Execute();
+        Ioc.Resolve<SpaceBattle.Lib.ICommand>("GameObject.Remove", "Id-test").Execute();
 
         Assert.Throws<Exception>(() =>
         {
-            Ioc.Resolve<Dictionary<string, object>>("GameObject.Get", "Id");
+            Ioc.Resolve<Dictionary<string, object>>("GameObject.Get", "Id-test");
         });
     }
 
