@@ -15,8 +15,8 @@ public class CollisionCommand : ICommand
     }
     public void Execute()
     {
-        var deltaPosition = Ioc.Resolve<Array>("Game.GetVectorDifference", firstObject.Position, secondObject.Position);
-        var deltaVelocity = Ioc.Resolve<Array>("Game.GetVectorDifference", firstObject.Velocity, secondObject.Velocity);
+        var deltaPosition = Ioc.Resolve<Array>("Game.GetVectorDelta", firstObject.Position, secondObject.Position);
+        var deltaVelocity = Ioc.Resolve<Array>("Game.GetVectorDelta", firstObject.Velocity, secondObject.Velocity);
 
         var isColliding = Ioc.Resolve<bool>("Game.IsColliding", deltaPosition, deltaVelocity, firstObject.Shape, secondObject.Shape);
         if (isColliding)
