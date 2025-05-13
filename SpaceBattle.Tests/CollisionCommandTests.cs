@@ -10,7 +10,7 @@ namespace SpaceBattle.Lib.Tests
         {
             new InitCommand().Execute();
             var iocScope = Ioc.Resolve<object>("IoC.Scope.Create");
-            Ioc.Resolve<ICommand>("IoC.Scope.Current.Set", iocScope).Execute();
+            Ioc.Resolve<App.ICommand>("IoC.Scope.Current.Set", iocScope).Execute();
         }
 
         [Fact(DisplayName = "При обнаружении коллизии команда должна выполниться")]
@@ -82,15 +82,15 @@ namespace SpaceBattle.Lib.Tests
         {
             new RegisterIoCDependencyVectorDelta().Execute();
 
-            Ioc.Resolve<ICommand>(
+            Ioc.Resolve<App.ICommand>(
                 "IoC.Register",
                 "Game.IsObjectsInOneSquare",
                 (object[] args) => (object)inSameSquare
             ).Execute();
 
-            Ioc.Resolve<ICommand>(
+            Ioc.Resolve<App.ICommand>(
                 "IoC.Register",
-                "Game.IsCollision",
+                "Game.IsColliding",
                 (object[] args) => (object)hasCollision
             ).Execute();
 
