@@ -24,6 +24,6 @@ public class RegisterIoCDependencyVectorDeltaTests
 
         Assert.IsType<int[]>(result);
         var deltaArray = (int[])result;
-        Assert.Equal(new[] { 3, 2 }, deltaArray);
+        Assert.Equal([3, 2], deltaArray);
     }
 }
