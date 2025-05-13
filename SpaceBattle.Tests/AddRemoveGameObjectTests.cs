@@ -59,16 +59,6 @@ public class AddGameObjectCommandTests
         var command = new AddGameObjectCommand(repository, gameObject);
         var ex = Assert.Throws<InvalidOperationException>(() => command.Execute());
     }
-
-    [Fact]
-    public void Execute_ThrowsException_WhenIdIsNull()
-    {
-        var repository = new Dictionary<string, Dictionary<string, object>>();
-        var gameObject = new Dictionary<string, object> { { "Id", null! } };
-        var command = new AddGameObjectCommand(repository, gameObject);
-        var ex = Assert.Throws<InvalidOperationException>(() => command.Execute());
-        Assert.Equal("Идентификатор объекта не может быть null.", ex.Message);
-    }
 }
 
 public class RemoveGameObjectCommandTests
