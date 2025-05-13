@@ -7,8 +7,8 @@ public class RegisterIoCDependencyGameObj : ICommand
     {
         var gameObj = new Dictionary<string, Dictionary<string, object>>();
 
-        Ioc.Resolve<ICommand>(
-            "Ioc.Register",
+        Ioc.Resolve<App.ICommand>(
+            "IoC.Register",
             "GameObject.Add",
             (object[] args) => new AddGameObjectCommand(
                 gameObj,
@@ -16,8 +16,8 @@ public class RegisterIoCDependencyGameObj : ICommand
             )
         ).Execute();
 
-        Ioc.Resolve<ICommand>(
-            "Ioc.Register",
+        Ioc.Resolve<App.ICommand>(
+            "IoC.Register",
             "GameObject.Remove",
             (object[] args) => new RemoveGameObjectCommand(
                 gameObj,
@@ -25,8 +25,8 @@ public class RegisterIoCDependencyGameObj : ICommand
             )
         ).Execute();
 
-        Ioc.Resolve<ICommand>(
-            "Ioc.Register",
+        Ioc.Resolve<App.ICommand>(
+            "IoC.Register",
             "GameObject.Get",
             (object[] args) =>
             {
