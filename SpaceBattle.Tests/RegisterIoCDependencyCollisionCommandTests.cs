@@ -13,7 +13,7 @@ public class RegisterIoCDependencyCollisionCommandTests
         Ioc.Resolve<App.ICommand>("IoC.Scope.Current.Set", iocScope).Execute();
     }
     [Fact]
-    public void ExecuteTest()
+    public void ExecuteTestCollision()
     {
         var mockFirstObject = new Mock<IColliding>();
         var mockSecondObject = new Mock<IColliding>();
