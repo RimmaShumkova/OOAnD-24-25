@@ -3,9 +3,9 @@ using App.Scopes;
 
 namespace SpaceBattle.Lib;
 
-public class RegisterIoCDependencyCollisionDataSaveCommandTests
+public class RegisterIoCDependencyCollisionSaveDataCommandTests
 {
-    public RegisterIoCDependencyCollisionDataSaveCommandTests()
+    public RegisterIoCDependencyCollisionSaveDataCommandTests()
     {
         new InitCommand().Execute();
         var iocScope = Ioc.Resolve<object>("IoC.Scope.Create");
