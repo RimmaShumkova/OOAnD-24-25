@@ -12,7 +12,7 @@ public class CollisionCommandTests
         Ioc.Resolve<App.ICommand>("IoC.Scope.Current.Set", iocScope).Execute();
     }
 
-    [Fact(DisplayName = "При обнаружении коллизии команда должна выполниться")]
+    [Fact]
     public void Execute_CollisionDetected_CommandExecuted()
     {
         var position1 = new Vector(new[] { 10, 20 });
@@ -40,7 +40,7 @@ public class CollisionCommandTests
         mockCommand.Verify(c => c.Execute(), Times.Once);
     }
 
-    [Fact(DisplayName = "При отсутствии коллизии команда не должна выполняться")]
+    [Fact]
     public void Execute_NoCollisionDetected_CommandNotExecuted()
     {
         var position1 = new Vector(new[] { 50, 75 });
