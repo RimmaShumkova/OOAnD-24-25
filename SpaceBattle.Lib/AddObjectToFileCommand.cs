@@ -14,6 +14,16 @@ public class AddObjectToFileCommand : ICommand
 
     public void Execute()
     {
+        if (filePath == null)
+        {
+            throw new ArgumentNullException(nameof(filePath));
+        }
+
+        if (objectToAdd == null)
+        {
+            throw new ArgumentNullException(nameof(objectToAdd));
+        }
+
         var jsonString = JsonSerializer.Serialize(objectToAdd);
         File.WriteAllText(filePath, jsonString);
     }

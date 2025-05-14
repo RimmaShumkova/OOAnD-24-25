@@ -7,7 +7,7 @@ public class CollisionPrepareDataCommand : ICommand
     private readonly ICollisionDataGenerator dataGenerator;
     public CollisionPrepareDataCommand(ICollisionDataGenerator dataGenerator)
     {
-        this.dataGenerator = dataGenerator;
+        this.dataGenerator = dataGenerator ?? throw new ArgumentNullException(nameof(dataGenerator));
     }
 
     public void Execute()
