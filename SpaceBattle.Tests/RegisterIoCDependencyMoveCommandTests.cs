@@ -23,6 +23,5 @@ public class RegisterIoCDependencyMoveCommandTests
         var res = Ioc.Resolve<ICommand>("Commands.Move");
 
         Assert.IsType<MoveCommand>(res);
-
     }
 }
