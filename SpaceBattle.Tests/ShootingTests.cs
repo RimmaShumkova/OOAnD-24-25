@@ -22,13 +22,18 @@ public class ShootCommandTests
         var actionMock = new Mock<SpaceBattle.Lib.ICommand>();
         actionMock.Setup(x => x.Execute()).Verifiable();
 
-        Ioc.Resolve<App.ICommand>("IoC.Register", "Game.Projectile.Create", (object[] args) => properties.Object).Execute();
-        Ioc.Resolve<App.ICommand>("IoC.Register", "Commands.Shoot", (object[] args) => new ShootCommand((IShootable)args[0])).Execute();
+        var gameAddMock = new Mock<SpaceBattle.Lib.ICommand>();
+        gameAddMock.Setup(x => x.Execute()).Verifiable();
+
+        new RegisterIoCDependencyShootCommand().Execute();
+
+        Ioc.Resolve<App.ICommand>("IoC.Register", "GameObject.Add", (object[] args) => gameAddMock.Object).Execute();
 
         Ioc.Resolve<App.ICommand>("IoC.Register", "Actions.Start", (object[] args) => actionMock.Object).Execute();
 
         Ioc.Resolve<ICommand>("Commands.Shoot", shootableMock.Object).Execute();
 
+        gameAddMock.VerifyAll();
         actionMock.VerifyAll();
     }
 
@@ -39,10 +44,11 @@ public class ShootCommandTests
 
         var movableMock = new Mock<SpaceBattle.Lib.IMovable>();
         var actionMock = new Mock<SpaceBattle.Lib.ICommand>();
-        actionMock.Setup(x => x.Execute()).Verifiable();
+        var gameAddMock = new Mock<SpaceBattle.Lib.ICommand>();
 
-        Ioc.Resolve<App.ICommand>("IoC.Register", "Game.Projectile.Create", (object[] args) => properties.Object).Execute();
-        Ioc.Resolve<App.ICommand>("IoC.Register", "Commands.Shoot", (object[] args) => new ShootCommand((IShootable)args[0])).Execute();
+        new RegisterIoCDependencyShootCommand().Execute();
+
+        Ioc.Resolve<App.ICommand>("IoC.Register", "GameObject.Add", (object[] args) => gameAddMock.Object).Execute();
 
         Ioc.Resolve<App.ICommand>("IoC.Register", "Actions.Start", (object[] args) => actionMock.Object).Execute();
 
