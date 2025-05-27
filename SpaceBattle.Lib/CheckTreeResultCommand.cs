@@ -1,10 +1,10 @@
 ﻿namespace SpaceBattle.Lib;
 
-public class AddTreeResultCommand : ICommand
+public class CheckTreeResultCommand : ICommand
 {
     private Dictionary<int, object> tree;
     private readonly List<int> attributeList;
-    public AddTreeResultCommand(Dictionary<int, object> tree, List<int> attributeList)
+    public CheckTreeResultCommand(Dictionary<int, object> tree, List<int> attributeList)
     {
         this.tree = tree;
         this.attributeList = attributeList;
@@ -15,7 +15,7 @@ public class AddTreeResultCommand : ICommand
         {
             if (!tree.ContainsKey(attribute))
             {
-                tree.Add(attribute, new Dictionary<int, object>());
+                throw new Exception();
             }
 
             tree = (Dictionary<int, object>)tree[attribute];
