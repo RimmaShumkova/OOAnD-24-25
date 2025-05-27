@@ -6,7 +6,7 @@ namespace SpaceBattle.Tests;
 public class RegisterIoCDependencyCollisionTreeTest
 {
     [Fact]
-    public void ConstructionTest()
+    public void CollisionConstructionTest()
     {
         new InitCommand().Execute();
         var iocScope = Ioc.Resolve<object>("IoC.Scope.Create");
