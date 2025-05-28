@@ -15,7 +15,7 @@ public class RegisterIoCDependencyCollisionSaveDataCommandTests
     [Fact]
     public void ExecuteTestCollisionSaveDataCommand()
     {
-        var collisionName = "testCollision";
+        var collisName = "testCollision";
         var collisionData = new List<int[]> { new int[] { 1, 2 }, new int[] { 3, 4 } };
 
         var registerCommand = new RegisterIoCDependencyCollisionDataSaveCommand();
@@ -24,7 +24,7 @@ public class RegisterIoCDependencyCollisionSaveDataCommandTests
 
         var resolvedCommand = Ioc.Resolve<ICommand>(
             "Collision.SaveDataCommand",
-            collisionName,
+            collisName,
             collisionData
         );
 
