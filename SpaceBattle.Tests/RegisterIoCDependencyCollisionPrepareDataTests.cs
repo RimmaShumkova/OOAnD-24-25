@@ -17,7 +17,7 @@ namespace SpaceBattle.Lib.Tests
         public void Execute_RegistersCollisionPrepareDataDependency()
         {
             var mockDataGenerator = new Mock<ICollisionDataGenerator>();
-            
+
             var regCommand = new RegisterIoCDependencyCollisionPrepareData();
 
             regCommand.Execute();
