@@ -31,7 +31,6 @@ namespace SpaceBattle.Lib.Tests
             var data = new List<int[]> { new[] { 1, 2 }, new[] { 3, 4 } };
 
             var cmd = Ioc.Resolve<ICommand>("Commands.AddObjectToFile", path, data);
-            
 
             Assert.NotNull(cmd);
             Assert.IsType<AddObjectToFileCommand>(cmd);
