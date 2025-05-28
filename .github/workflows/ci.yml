@@ -135,16 +135,31 @@ jobs:
                     fi
                   fi
                 fi
+                
                 if [ ! -z "$actual_file" ]; then
+                  # Safely get class start/end lines
                   class_start=$(grep -n "<class.*$file_name.*>" "$coverage_file" | cut -d: -f1)
-                  class_end=$(tail -n +$class_start "$coverage_file" | grep -n "</class>" | head -n 1 | cut -d: -f1)
-                  class_end=$((class_start + class_end - 1))
+                  if [ -z "$class_start" ]; then
+                    echo "Could not find class start in coverage file" >> $GITHUB_STEP_SUMMARY
+                    continue
+                  fi
                   
-                  sed -n "${class_start},${class_end}p" "$coverage_file" > class_info.xml
+                  # Find the closing tag after class_start
+                  class_end_lines=$(tail -n +"$class_start" "$coverage_file" | grep -n "</class>" | head -n 1 | cut -d: -f1)
+                  if [ -z "$class_end_lines" ]; then
+                    echo "Could not find class end in coverage file" >> $GITHUB_STEP_SUMMARY
+                    continue
+                  fi
+                  
+                  class_end=$((class_start + class_end_lines - 1))
+                  
+                  # Create temp file safely
+                  temp_file=$(mktemp)
+                  sed -n "${class_start},${class_end}p" "$coverage_file" > "$temp_file"
                   
                   declare -A seen_lines
                   
-                  grep -o '<line[^>]*>' class_info.xml | \
+                  grep -o '<line[^>]*>' "$temp_file" | \
                   while read -r line; do
                     if [[ $line =~ number=\"([0-9]+)\".*hits=\"0\" ]]; then
                       line_num=${BASH_REMATCH[1]}
@@ -160,7 +175,7 @@ jobs:
                   done
                   
                   unset seen_lines
-                  rm class_info.xml
+                  rm "$temp_file"
                 else
                   echo "⚠️ File not found in $lib_dir: $file_name" >> $GITHUB_STEP_SUMMARY
                   echo "Please ensure the file exists and is in the correct location." >> $GITHUB_STEP_SUMMARY
