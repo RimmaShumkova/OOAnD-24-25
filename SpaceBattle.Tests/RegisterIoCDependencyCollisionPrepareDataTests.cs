@@ -18,9 +18,9 @@ namespace SpaceBattle.Lib.Tests
         {
             var mockDataGenerator = new Mock<ICollisionDataGenerator>();
 
-            var regCommand = new RegisterIoCDependencyCollisionPrepareData();
+            var reg_Command = new RegisterIoCDependencyCollisionPrepareData();
 
-            regCommand.Execute();
+            reg_Command.Execute();
 
             var collPrepareDataCommand = Ioc.Resolve<ICommand>("Collision.PrepareData", mockDataGenerator.Object);
             Assert.NotNull(collPrepareDataCommand);
